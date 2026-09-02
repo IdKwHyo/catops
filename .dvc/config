@@ -1,0 +1,4 @@
+[core]
+    no_scm = true
+    analytics = false
+

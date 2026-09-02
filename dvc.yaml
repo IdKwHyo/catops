@@ -1,0 +1,52 @@
+stages:
+  train_sample:
+    cmd: >-
+      python -m pipelines.train_baseline
+      --catalog ${data.catalog}
+      --offers ${data.offers}
+      --artifact ${artifacts.baseline}
+      --auto-threshold ${thresholds.auto_match}
+      --review-threshold ${thresholds.review}
+    deps:
+      - ${data.catalog}
+      - ${data.offers}
+      - pipelines/ingest.py
+      - pipelines/train_baseline.py
+      - services/matcher
+    params:
+      - data
+      - artifacts.baseline
+      - thresholds.auto_match
+      - thresholds.review
+    outs:
+      - ${artifacts.baseline}
+
+  evaluate_sample:
+    cmd: >-
+      python -m evaluation.run
+      --catalog ${data.catalog}
+      --offers ${data.offers}
+      --output ${artifacts.evaluation}
+      --check-thresholds
+      --min-precision ${thresholds.min_precision}
+      --min-recall ${thresholds.min_recall}
+      --min-f1 ${thresholds.min_f1}
+      --min-recall-at-5 ${thresholds.min_recall_at_5}
+    deps:
+      - ${data.catalog}
+      - ${data.offers}
+      - evaluation/__init__.py
+      - evaluation/metrics.py
+      - evaluation/run.py
+      - pipelines/ingest.py
+      - services/matcher
+    params:
+      - data
+      - artifacts.evaluation
+      - thresholds.min_precision
+      - thresholds.min_recall
+      - thresholds.min_f1
+      - thresholds.min_recall_at_5
+    metrics:
+      - ${artifacts.evaluation}:
+          cache: false

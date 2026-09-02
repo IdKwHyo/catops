@@ -1,0 +1,16 @@
+data:
+  catalog: data/sample/catalog.csv
+  offers: data/sample/offers.jsonl
+
+artifacts:
+  baseline: artifacts/baseline
+  evaluation: evaluation/results/dvc-baseline.json
+
+thresholds:
+  auto_match: 0.85
+  review: 0.55
+  min_precision: 0.75
+  min_recall: 0.55
+  min_f1: 0.63
+  min_recall_at_5: 0.90
+

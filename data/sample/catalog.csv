@@ -1,0 +1,14 @@
+product_id,title,brand,description,category,price,currency,identifiers
+P1001,Sony WH-1000XM5 Wireless Noise Cancelling Headphones - Black,Sony,Over-ear Bluetooth headphones with active noise cancellation,Headphones,399.99,USD,"{""mpn"": ""WH-1000XM5""}"
+P1002,Apple AirPods Pro (2nd generation) with USB-C,Apple,True wireless earbuds with MagSafe USB-C charging case,Earbuds,249.00,USD,"{""mpn"": ""MTJV3LL/A""}"
+P1003,Samsung Galaxy S24 256GB Onyx Black,Samsung,Unlocked 6.2-inch Android smartphone with 256 GB storage,Smartphones,799.99,USD,"{""mpn"": ""SM-S921BZKDEUB""}"
+P1004,Nintendo Switch OLED Model White,Nintendo,OLED handheld game console with white Joy-Con controllers,Game Consoles,349.99,USD,"{""mpn"": ""HEG-S-KAAAA""}"
+P1005,Logitech MX Master 3S Wireless Mouse Graphite,Logitech,Quiet ergonomic performance mouse in graphite,Computer Mice,99.99,USD,"{""mpn"": ""910-006556""}"
+P1006,Dyson V8 Absolute Cordless Vacuum,Dyson,Cordless stick vacuum with cleaner-head attachments,Vacuum Cleaners,469.99,USD,"{""mpn"": ""476547-01""}"
+P1007,Canon EOS R50 Mirrorless Camera with RF-S 18-45mm Lens,Canon,Compact APS-C mirrorless camera kit in black,Cameras,679.99,USD,"{""mpn"": ""5811C012""}"
+P1008,LEGO Star Wars Millennium Falcon 75375,LEGO,Buildable starship display model construction set,Toys,84.99,USD,"{""mpn"": ""75375""}"
+P1009,Instant Pot Duo 7-in-1 Electric Pressure Cooker 6 Quart,Instant Pot,Seven-function stainless steel multicooker,Kitchen Appliances,99.99,USD,"{""mpn"": ""112-0170-01""}"
+P1010,Anker PowerCore 10000 Portable Charger,Anker,Compact 10000 mAh USB portable power bank,Power Banks,29.99,USD,"{""mpn"": ""A1263""}"
+P1011,Nike Air Zoom Pegasus 40 Men's Road Running Shoes,Nike,Neutral road running shoe for men,Running Shoes,130.00,USD,"{""mpn"": ""DV3853-001""}"
+P1012,Nespresso Vertuo Pop Coffee Machine Coconut White,Nespresso,Compact capsule coffee maker in coconut white,Coffee Makers,129.00,USD,"{""mpn"": ""ENV90.W""}"
+

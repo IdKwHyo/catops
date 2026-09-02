@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.venv/
+venv/
+
+# JavaScript
+node_modules/
+apps/web/dist/
+*.tsbuildinfo
+npm-debug.log*
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.tfvars
+*.tfvars.json
+*.auto.tfvars.json
+!*.tfvars.example
+
+# Runtime state and generated artifacts
+*.db
+*.sqlite*
+artifacts/
+mlruns/
+data/raw/
+data/processed/
+evaluation/results/*.json
+!evaluation/results/.gitkeep
+!evaluation/results/dvc-baseline.json
+!evaluation/results/sample-baseline.json
+!evaluation/results/api-load-test.json
+!evaluation/results/api-load-test.json
+logs/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+
+# DVC local state (pipeline definitions and dvc.lock remain versioned)
+.dvc/cache/
+.dvc/tmp/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

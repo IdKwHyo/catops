@@ -1,0 +1,92 @@
+name: AWS deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Protected GitHub environment
+        required: true
+        type: choice
+        options: [staging, production]
+        default: staging
+      apply:
+        description: Apply the reviewed Terraform plan
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build, plan, and optionally apply
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: ${{ inputs.environment }}
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_IN_AUTOMATION: "true"
+      TF_VAR_environment: ${{ inputs.environment }}
+      TF_VAR_certificate_arn: ${{ vars.CERTIFICATE_ARN }}
+      TF_VAR_hosted_zone_id: ${{ vars.HOSTED_ZONE_ID }}
+      TF_VAR_application_hostname: ${{ vars.APPLICATION_HOSTNAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: ecr
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.8"
+      - name: Initialize remote state
+        run: |
+          terraform -chdir=infra/terraform init \
+            -backend-config="bucket=${{ vars.TF_STATE_BUCKET }}" \
+            -backend-config="key=catalogops/${{ inputs.environment }}/terraform.tfstate" \
+            -backend-config="region=${{ vars.AWS_REGION }}" \
+            -backend-config="dynamodb_table=${{ vars.TF_LOCK_TABLE }}" \
+            -backend-config="encrypt=true"
+      - name: Set immutable image references
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          echo "TF_VAR_api_image=$REGISTRY/catalogops-${{ inputs.environment }}-api:$IMAGE_TAG" >> "$GITHUB_ENV"
+          echo "TF_VAR_web_image=$REGISTRY/catalogops-${{ inputs.environment }}-web:$IMAGE_TAG" >> "$GITHUB_ENV"
+      - name: Configure optional alarm notifications
+        if: vars.ALARM_TOPIC_ARN != ''
+        run: echo "TF_VAR_alarm_topic_arn=${{ vars.ALARM_TOPIC_ARN }}" >> "$GITHUB_ENV"
+      - name: Bootstrap encrypted ECR repositories
+        if: inputs.apply
+        run: |
+          terraform -chdir=infra/terraform apply -auto-approve \
+            -target=aws_ecr_repository.api \
+            -target=aws_ecr_repository.web
+      - uses: docker/setup-buildx-action@v3
+        if: inputs.apply
+      - name: Build and push immutable images
+        if: inputs.apply
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker buildx build --platform linux/amd64 --push \
+            --file Dockerfile.api \
+            --tag "$REGISTRY/catalogops-${{ inputs.environment }}-api:$IMAGE_TAG" .
+          docker buildx build --platform linux/amd64 --push \
+            --file Dockerfile.web \
+            --tag "$REGISTRY/catalogops-${{ inputs.environment }}-web:$IMAGE_TAG" .
+      - name: Create deployment plan
+        run: terraform -chdir=infra/terraform plan -out=tfplan
+      - name: Apply reviewed plan
+        if: inputs.apply
+        run: terraform -chdir=infra/terraform apply -auto-approve tfplan

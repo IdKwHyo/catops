@@ -1,0 +1,14 @@
+-r apps/api/requirements.txt
+
+# Tests and HTTP contract checks
+pytest>=8.3,<9.0
+pytest-cov>=6.0,<7.0
+httpx>=0.28,<1.0
+
+# Static quality gates
+ruff>=0.11,<1.0
+mypy>=1.15,<2.0
+
+# Enables the trained TF-IDF/logistic baseline; runtime falls back cleanly without it.
+scikit-learn>=1.6,<2.0
+joblib>=1.4,<2.0

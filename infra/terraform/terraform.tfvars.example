@@ -1,0 +1,26 @@
+project_name = "catalogops"
+environment  = "staging"
+aws_region   = "ap-southeast-1"
+
+# The certificate must exist in the same region as the ALB.
+certificate_arn = "arn:aws:acm:ap-southeast-1:123456789012:certificate/replace-me"
+hosted_zone_id  = "Z0123456789EXAMPLE"
+application_hostname = "catalogops.example.com"
+
+# Push images first and pin immutable commit tags or digests.
+api_image = "123456789012.dkr.ecr.ap-southeast-1.amazonaws.com/catalogops-staging-api:git-sha"
+web_image = "123456789012.dkr.ecr.ap-southeast-1.amazonaws.com/catalogops-staging-web:git-sha"
+
+# Public demo ingress. Restrict this list for an internal deployment.
+allowed_ipv4_cidrs = ["0.0.0.0/0"]
+
+# Use two tasks and Multi-AZ RDS for a production availability target.
+api_desired_count = 1
+web_desired_count = 1
+db_multi_az       = false
+
+deletion_protection = true
+skip_final_snapshot = false
+
+# Optional SNS topic for alarm notifications.
+alarm_topic_arn = null

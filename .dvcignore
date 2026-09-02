@@ -1,0 +1,9 @@
+.git/
+.github/
+.venv/
+**/__pycache__/
+*.py[cod]
+apps/web/node_modules/
+apps/web/dist/
+infra/terraform/.terraform/
+htmlcov/

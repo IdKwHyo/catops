@@ -1,0 +1,92 @@
+schema: '2.0'
+stages:
+  train_sample:
+    cmd: python -m pipelines.train_baseline --catalog data/sample/catalog.csv 
+      --offers data/sample/offers.jsonl --artifact artifacts/baseline 
+      --auto-threshold 0.85 --review-threshold 0.55
+    deps:
+    - path: data/sample/catalog.csv
+      hash: md5
+      md5: ec20abb3aab9ecb5ab0258433828d1da
+      size: 1965
+    - path: data/sample/offers.jsonl
+      hash: md5
+      md5: ff0ce0b5426a0613386294da31e19683
+      size: 11830
+    - path: pipelines/ingest.py
+      hash: md5
+      md5: 3c153aeb18b767d4b6a0363991f4b0a2
+      size: 9253
+    - path: pipelines/train_baseline.py
+      hash: md5
+      md5: ad5d1c1224c9a0096522a6a0538eea27
+      size: 2549
+    - path: services/matcher
+      hash: md5
+      md5: afbdcc66b77f4917a0f66df76381895d.dir
+      size: 43537
+      nfiles: 6
+    params:
+      params.yaml:
+        artifacts.baseline: artifacts/baseline
+        data:
+          catalog: data/sample/catalog.csv
+          offers: data/sample/offers.jsonl
+        thresholds.auto_match: 0.85
+        thresholds.review: 0.55
+    outs:
+    - path: artifacts/baseline
+      hash: md5
+      md5: 261f70ae96801ebef3bcd1090af383e4.dir
+      size: 29589
+      nfiles: 3
+  evaluate_sample:
+    cmd: python -m evaluation.run --catalog data/sample/catalog.csv --offers 
+      data/sample/offers.jsonl --output evaluation/results/dvc-baseline.json 
+      --check-thresholds --min-precision 0.75 --min-recall 0.55 --min-f1 0.63 
+      --min-recall-at-5 0.9
+    deps:
+    - path: data/sample/catalog.csv
+      hash: md5
+      md5: ec20abb3aab9ecb5ab0258433828d1da
+      size: 1965
+    - path: data/sample/offers.jsonl
+      hash: md5
+      md5: ff0ce0b5426a0613386294da31e19683
+      size: 11830
+    - path: evaluation/__init__.py
+      hash: md5
+      md5: de26675bd400b49875c0904e84b226a9
+      size: 108
+    - path: evaluation/metrics.py
+      hash: md5
+      md5: 28ec1bb5fd727e64ba89fd1d2576f9a0
+      size: 10707
+    - path: evaluation/run.py
+      hash: md5
+      md5: f945eab86f2e10aa0168b342637990ba
+      size: 5131
+    - path: pipelines/ingest.py
+      hash: md5
+      md5: 3c153aeb18b767d4b6a0363991f4b0a2
+      size: 9253
+    - path: services/matcher
+      hash: md5
+      md5: afbdcc66b77f4917a0f66df76381895d.dir
+      size: 43537
+      nfiles: 6
+    params:
+      params.yaml:
+        artifacts.evaluation: evaluation/results/dvc-baseline.json
+        data:
+          catalog: data/sample/catalog.csv
+          offers: data/sample/offers.jsonl
+        thresholds.min_f1: 0.63
+        thresholds.min_precision: 0.75
+        thresholds.min_recall: 0.55
+        thresholds.min_recall_at_5: 0.9
+    outs:
+    - path: evaluation/results/dvc-baseline.json
+      hash: md5
+      md5: edd83562d61a223f693238933d274a36
+      size: 5128
